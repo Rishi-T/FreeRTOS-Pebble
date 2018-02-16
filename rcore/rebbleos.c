@@ -11,6 +11,7 @@
 #include "rebbleos.h"
 #include "ngfxwrap.h"
 #include "overlay_manager.h"
+#include "notification_manager.h"
 
 
 // current status of te system
@@ -30,6 +31,7 @@ void rebbleos_init(void)
     appmanager_init();
     
     overlay_window_init();
+    notification_init();
 }
 
 void rebbleos_set_system_status(uint8_t status)

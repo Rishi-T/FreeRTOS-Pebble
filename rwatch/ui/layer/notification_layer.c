@@ -23,6 +23,7 @@ static void notification_layer_ctor(NotificationLayer *notification_layer, GRect
     layer_ctor(&notification_layer->layer, frame);
     list_init_head(&notification_layer->notif_list_head);
     layer_set_update_proc(&notification_layer->layer, _notification_layer_update_proc);
+    SYS_LOG("noty", APP_LOG_LEVEL_ERROR, "N CTOR");
 }
 
 static void notification_layer_dtor(NotificationLayer *notification_layer)
@@ -41,9 +42,8 @@ static void notification_layer_dtor(NotificationLayer *notification_layer)
     }
     layer_remove_from_parent(&notification_layer->status_bar.layer);
     status_bar_layer_destroy(&notification_layer->status_bar);
-    layer_destroy(&notification_layer->layer);
-    app_free(notification_layer);
-    window_dirty(true);
+    layer_dtor(&notification_layer->layer);
+    SYS_LOG("noty", APP_LOG_LEVEL_ERROR, "N DTOR");
 }
 
 static void _status_index_draw(Layer *layer, GContext *ctx)
@@ -78,13 +78,15 @@ NotificationLayer *notification_layer_create(GRect frame)
 #endif
     
     notification_layer->notif_count = 0;
-    
+    SYS_LOG("noty", APP_LOG_LEVEL_ERROR, "N CTOR");    
     return notification_layer;
 }
 
 void notification_layer_destroy(NotificationLayer *notification_layer)
 {
-    notification_layer_dtor(notification_layer);    
+    notification_layer_dtor(notification_layer);
+    app_free(notification_layer);
+    window_dirty(true);
 }
 
 Notification* notification_create(const char *app_name, const char *title, const char *body, GBitmap *icon, GColor color)
@@ -125,12 +127,19 @@ Layer* notification_layer_get_layer(NotificationLayer *notification_layer)
     return &notification_layer->layer;
 }
 
-void notification_layer_configure_click_config(NotificationLayer *notification_layer, Window *window)
+void notification_layer_configure_click_config(NotificationLayer *notification_layer, 
+                                               Window *window,
+                                               ClickHandler back_click_handler)
 {
+    notification_layer->back_click_handler = back_click_handler;
+
     window_set_click_config_provider_with_context(window, 
                                                   (ClickConfigProvider)_click_config_provider, 
                                                   notification_layer);
+    
+    _click_config_provider(notification_layer);
 }
+
 
 static void _set_scroll_offset(void *subject, int16_t value)
 {
@@ -292,21 +301,19 @@ static void _show_options_click_handler(ClickRecognizerRef recognizer, void *con
     action_menu_open(&config);
 }
 
-static void _pop_notification_click_handler(ClickRecognizerRef recognizer, void *context)
-{
-  /* XXX pop the window, call the unload handler on the notification_layer */
-}
-
 static void _click_config_provider(void *context)
 {
+    NotificationLayer *nl = (NotificationLayer *)context;
+    assert(nl);
     window_single_click_subscribe(BUTTON_ID_DOWN, (ClickHandler) _scroll_down_click_handler);
     window_single_click_subscribe(BUTTON_ID_UP, (ClickHandler) _scroll_up_click_handler);
     window_single_click_subscribe(BUTTON_ID_SELECT, (ClickHandler) _show_options_click_handler);
-    window_single_click_subscribe(BUTTON_ID_BACK, (ClickHandler) _pop_notification_click_handler);
-    
+    window_single_click_subscribe(BUTTON_ID_BACK, (ClickHandler) nl->back_click_handler);
+
     window_set_click_context(BUTTON_ID_DOWN, context);
     window_set_click_context(BUTTON_ID_UP, context);
     window_set_click_context(BUTTON_ID_SELECT, context);
+    window_set_click_context(BUTTON_ID_BACK, context);
 }
 
 static void _notification_layer_update_proc(Layer *layer, GContext *ctx)
@@ -325,6 +332,8 @@ static void _notification_layer_update_proc(Layer *layer, GContext *ctx)
     char *body = (char *)notification->body;
     
     // Draw the background:
+    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_fill_rect(ctx, GRect(0, 0, DISPLAY_COLS, DISPLAY_ROWS), 0, GCornerNone);
     graphics_context_set_fill_color(ctx, notification->color);
 #ifdef PBL_RECT
     GRect rect_bounds = GRect(0, 0 - offset, bounds.size.w, 35);

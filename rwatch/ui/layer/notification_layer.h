@@ -34,10 +34,11 @@ typedef struct NotificationLayer
 {
     Layer layer;
     StatusBarLayer status_bar;
-    
+    ClickHandler back_click_handler;
     uint16_t offset;
     uint16_t anim_offset_start;
     uint16_t anim_offset_goal;
+    
     PropertyAnimation prop_anim;
     NotificationAction *actions;
     Notification *active;
@@ -56,4 +57,7 @@ Layer* notification_layer_get_layer(NotificationLayer *notification_layer);
 void notification_layer_destroy(NotificationLayer *notification_layer);
 Notification* notification_create(const char *app_name, const char *title, const char *body, GBitmap *icon, GColor color);
 void notification_layer_stack_push_notification(NotificationLayer *notification_layer, Notification *notification);
-void notification_layer_configure_click_config(NotificationLayer *notification_layer, Window *window);
+void notification_layer_configure_click_config(NotificationLayer *notification_layer, 
+                                               Window *window,
+                                               ClickHandler back_click_handler);
+

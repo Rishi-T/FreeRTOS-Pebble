@@ -6,12 +6,12 @@
  */ 
 #define MEMORY_SIZE_APP         90000
 #define MEMORY_SIZE_WORKER      500
-#define MEMORY_SIZE_OVERLAY     18000
+#define MEMORY_SIZE_OVERLAY     30000
 
 /* Size of the stack in bytes */
 #define MEMORY_SIZE_APP_STACK     20000
 #define MEMORY_SIZE_WORKER_STACK  1000
-#define MEMORY_SIZE_OVERLAY_STACK 6000
+#define MEMORY_SIZE_OVERLAY_STACK 2000
 
 // flash regions
 #define REGION_PRF_START        0x200000
