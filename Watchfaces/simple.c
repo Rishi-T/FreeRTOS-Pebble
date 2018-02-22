@@ -94,10 +94,10 @@ void simple_tick(struct tm *tick_time, TimeUnits tick_units)
     s_last_time.hours -= (s_last_time.hours > 12) ? 12 : 0;
     s_last_time.minutes = tick_time->tm_min;
 
-    for (int i = 0; i < 3; i++)
+    /*for (int i = 0; i < 3; i++)
     {
         s_color_channels[i] = rand() % 256;
-    }
+    }*/
 
     // Redraw
     if (s_canvas_layer)
@@ -107,26 +107,26 @@ void simple_tick(struct tm *tick_time, TimeUnits tick_units)
     }
 }
 
-#define HAND_MARGIN 10
+#define HAND_MARGIN 8
 
 static void simple_update_proc(Layer *layer, GContext *nGContext)
 {   
     GRect full_bounds = layer_get_bounds(layer);
     //graphics_context_set_fill_color(nGContext, GColorWhite);
-    graphics_context_set_fill_color(nGContext, GColorFromRGB(s_color_channels[0], s_color_channels[1], s_color_channels[2]));
+    graphics_context_set_fill_color(nGContext, GColorBlack);
      
     graphics_fill_rect(nGContext, full_bounds, 0, GCornerNone);
     
     graphics_context_set_stroke_color(nGContext, GColorBlack);
-    graphics_context_set_stroke_width(nGContext, 4);
+    graphics_context_set_stroke_width(nGContext, 8);
     //graphics_context_set_antialiased(nGContext, ANTIALIASING);
  
-    uint8_t s_radius = 60;
+    uint8_t s_radius = 72;
     
-    graphics_context_set_fill_color(nGContext, GColorWhite);
+    //graphics_context_set_fill_color(nGContext, GColorBlack); //White //
     //GPoint s_center = { .x = 70, .y = 90 };
     GPoint s_center = n_grect_center_point(&full_bounds);
-    graphics_fill_circle(nGContext, s_center, s_radius);
+    //graphics_fill_circle(nGContext, s_center, s_radius); //
  
     graphics_draw_circle(nGContext, s_center, s_radius);
      
@@ -147,7 +147,7 @@ static void simple_update_proc(Layer *layer, GContext *nGContext)
         graphics_draw_line(nGContext, s_center, hour_hand);
     }
     if (s_radius > HAND_MARGIN) {
-        graphics_context_set_stroke_color(nGContext, GColorBlack);
+        graphics_context_set_stroke_color(nGContext, GColorWhite);
         graphics_draw_line(nGContext, s_center, minute_hand);
     }    
 }
