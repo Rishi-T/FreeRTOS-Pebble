@@ -1,6 +1,6 @@
 [submodule "res"]
 	path = res
-	url = ../../Rishi-T/RebbleOS-resources
+	url = ../../pebble-dev/RebbleOS-resources
 [submodule "lib/ngfx"]
 	path = lib/neographics
 	url = ../../pebble-dev/neographics
