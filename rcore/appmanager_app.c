@@ -21,6 +21,7 @@ static void _appmanager_add_to_manifest(App *app);
 
 /* simple doesn't have an include, so cheekily forward declare here */
 void simple_main(void);
+void colour_main(void);
 void nivz_main(void);
 
 /* note that these flags are inverted */
@@ -64,6 +65,7 @@ void appmanager_app_loader_init()
     /* add the baked in apps */
     _appmanager_add_to_manifest(_appmanager_create_app("System", APP_TYPE_SYSTEM, systemapp_main, true, &empty, &empty));
     _appmanager_add_to_manifest(_appmanager_create_app("Simple", APP_TYPE_FACE, simple_main, true, &empty, &empty));
+    _appmanager_add_to_manifest(_appmanager_create_app("ColourClock", APP_TYPE_FACE, colour_main, true, &empty, &empty));
     _appmanager_add_to_manifest(_appmanager_create_app("NiVZ", APP_TYPE_FACE, nivz_main, true, &empty, &empty));
     _appmanager_add_to_manifest(_appmanager_create_app("Settings", APP_TYPE_SYSTEM, test_main, true, &empty, &empty));
     _appmanager_add_to_manifest(_appmanager_create_app("Notification", APP_TYPE_SYSTEM, notif_main, true, &empty, &empty));
