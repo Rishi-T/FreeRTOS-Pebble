@@ -124,7 +124,8 @@ SRCS_all += rwatch/ui/animation/animation.c
 SRCS_all += rwatch/ui/animation/property_animation.c
 
 SRCS_all += Watchfaces/simple.c
-SRCS_all += Watchfaces/nivz.c
+SRCS_all += Watchfaces/colourclock.c
+SRCS_all += Watchfaces/nivz.c 
 
 SRCS_all += Apps/System/systemapp.c
 SRCS_all += Apps/System/menu.c
